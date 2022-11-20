@@ -24,16 +24,24 @@ Route.group(() => {
   Route.post('/auth/login', 'AuthController.doLogin');
   Route.get('/auth/logout', 'AuthController.doLogout').middleware('auth')
   Route.group(() => {
-    Route.get('/', 'CategoriesController.getAll')
-    Route.post('/', 'CategoriesController.store')
-    Route.put('/:id', 'CategoriesController.update')
-    Route.delete('/:id', 'CategoriesController.delete')
-  }).prefix('category')
-  Route.group(() => {
-    Route.get('/', 'MastersController.getAll')
-    Route.post('/', 'MastersController.store')
-    Route.get('/:id', 'MastersController.show')
-    Route.put('/:id', 'MastersController.update')
-    Route.delete('/:id', 'MastersController.delete')
-  }).prefix('master')
+    Route.group(() => {
+      Route.get('/', 'CategoriesController.getAll')
+      Route.post('/', 'CategoriesController.store')
+      Route.put('/:id', 'CategoriesController.update')
+      Route.delete('/:id', 'CategoriesController.delete')
+    }).prefix('category')
+    Route.group(() => {
+      Route.get('/', 'MastersController.getAll')
+      Route.post('/', 'MastersController.store')
+      Route.get('/:id', 'MastersController.show')
+      Route.put('/:id', 'MastersController.update')
+      Route.delete('/:id', 'MastersController.delete')
+    }).prefix('master')
+    Route.group(() => {
+      Route.get('/', 'PetsController.getAll')
+      Route.post('/', 'PetsController.store')
+      Route.put('/:id', 'PetsController.update')
+      Route.delete('/:id', 'PetsController.delete')
+    }).prefix('pets')
+  }).middleware('auth')
 }).prefix('api/v1')

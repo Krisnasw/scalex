@@ -1,6 +1,7 @@
 // import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 import Database from "@ioc:Adonis/Lucid/Database";
+import Category from 'App/Models/Category'
 
 export default class CategoriesController {
   async getAll({ request, response }): Promise<void> {
@@ -30,12 +31,16 @@ export default class CategoriesController {
       .json({ error: false, message: "Category Successfully Created" });
   }
 
-  async update({ request, response }): Promise<void> {
-    const { id, name } = request.all();
+  async update({ params, request, response }): Promise<void> {
+    const { name } = request.all();
 
     const trx = await Database.transaction();
     try {
-      await trx.from("categories").where("id", id).update({ name });
+      const data = await trx.from("categories").where("id", params.id).first();
+      if (!data) {
+        return response.status(404).json({ error: false, message: 'Data not found' });
+      }
+      await trx.from("categories").where("id", params.id).update({ name });
       trx.commit();
     } catch (error) {
       trx.rollback();
@@ -47,12 +52,11 @@ export default class CategoriesController {
       .json({ error: false, message: "Category Successfully Updated" });
   }
 
-  async delete({ request, response }): Promise<void> {
-    const { id } = request.all();
-
+  async delete({ params, response }): Promise<void> {
     const trx = await Database.transaction();
     try {
-      await trx.from("categories").where("id", id).delete();
+      const category = await Category.findOrFail(params.id);
+      await category.delete();
       trx.commit();
     } catch (error) {
       trx.rollback();
